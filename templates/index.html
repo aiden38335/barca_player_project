@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Barca</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/nuclear/bulmaswatch.min.css">
+</head>
+<body class="has-background-light">
+  <section class="section">
+    <div class="container">
+      <h2 class="title has-text-centered">visca barca⚽️</h2>
+
+      <div class="columns is-centered">
+        <div class="column is-10-tablet is-8-desktop">
+          <div class="box">
+
+            <!-- 회원 이름 -->
+            <div class="field">
+              <label class="label" for="name">회원 이름</label>
+              <div class="control">
+                <input id="name" class="input" placeholder="이름">
+              </div>
+            </div>
+
+            <!-- 선수 선택 -->
+            <div class="field">
+              <label class="label" for="type">선수</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="type">
+                    <option value="2000000000000000000">Lamine Yamal 10</option>
+                    <option value="1900000000000000000">Pedri</option>
+                    <option value="1800000000000000000">Lewandowski</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 쿠폰 선택 -->
+            <div class="field">
+              <label class="label" for="couponSelect">쿠폰</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select id="couponSelect">
+                    <option value="1">1% 할인</option>
+                    <option value="2">2% 할인</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 버튼들 -->
+            <div class="buttons">
+              <button class="button is-link" onclick="sendOrder()">주문하기</button>
+              <button class="button is-light" onclick="showType()">선수</button>
+              <button class="button is-info is-light" onclick="showCoupon()">쿠폰 보여주기</button>
+            </div>
+
+            <!-- 결과 영역 -->
+            <p id="orderResult" class="has-text-weight-semibold has-text-primary"></p>
+            <p id="result"></p>
+            <p id="coupon"></p>
+
+            <!-- 이미지 -->
+            <figure class="image is-16by9">
+              <img src="https://daf17zziboaju.cloudfront.net/wp-content/uploads/2025/03/10190536/fc-barcelona.jpg" alt="FC Barcelona">
+            </figure>
+
+            <p id="typeResult" class="mt-3"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 기존 JS 그대로 유지 -->
+  <script>
+    async function showType() {
+        const res = await fetch("/player");
+        console.log(res)
+        const data = await res.json();
+        console.log(data)
+        document.getElementById("typeResult").innerText = data.player;
+    }
+
+    async function showCoupon() {
+        console.log(1)
+        const res = await fetch("/coupons");
+        const data = await res.json();
+        console.log(data)
+        document.getElementById("coupon").innerText = data.coupons;
+    }
+
+    async function sendOrder() {
+        const name = document.getElementById("name").value
+        const type = document.getElementById("type").value
+        const coupon = document.getElementById("couponSelect").value
+
+        const typeEl = document.getElementById("type");
+        const type_name = typeEl.options[typeEl.selectedIndex].text.trim();
+
+        console.log(name, type, type_name)
+        const res = await fetch("/order", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name: name, type: type, coupon: coupon, type_name: type_name})
+        });
+
+        const data = await res.json();
+
+        document.getElementById("orderResult").innerText = data.msg;
+    }
+  </script>
+</body>
+</html>
