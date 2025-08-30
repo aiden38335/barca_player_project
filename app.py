@@ -1,3 +1,4 @@
+import os
 import random
 import requests
 
@@ -36,4 +37,5 @@ def order():
 
 if __name__ == '__main__':
     # debug=True 모드는 개발 중에만 사용해야 합니다.
-    app.run(debug=True, port=5002)
+    port = int(os.environ.get("PORT",5002))
+    app.run(host = "0.0.0.0", port =port, debug=False)
